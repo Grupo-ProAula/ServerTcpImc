@@ -20,6 +20,24 @@ public class ThreadClient extends Thread{
         this.ip = client.getInetAddress().getHostAddress();
     }
     
+    @Override
+    public void run(){
+        try{
+            CalculateIMC.Imc imc = CalculateIMC();
+            sendResponse(imc);
+        }catch(Exception ex){
+            System.out.println(log() + ex.getMessage());
+            view.getTxtLog().append(log() + ex.getMessage() + "\n");
+            try{
+                client.close();
+            }catch(IOException e){
+                ServerTCP.clientList.remove(ip);
+            }finally{
+                ServerTCP.clientList.remove(ip);
+            }
+        }
+    }
+    
     public CalculateIMC.Imc CalculateIMC() throws Exception {
         DataInputStream input = null;
         try {
